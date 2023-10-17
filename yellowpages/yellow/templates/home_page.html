@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title  %}YellowPages{% endblock %}
+{% block style  %}
+{% endblock %}
+
+{% block body  %}
+<br><br>
+
+<span class="badge text-black bg-secondary">
+        <img width="200" src="media/ypimg.jpg"><br/>
+       <h1>DISCOVER BUSINESSES</h1>
+</span>
+
+<br><br>
+    {% for category in category %}
+            <a href="{% url 'category_business_list' category_id=category.id %}" class="btn btn-success">{{ category.title }}</a>
+
+    {% endfor %}
+
+{% endblock %}

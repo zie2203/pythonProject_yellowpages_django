@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title  %}YellowPagesDetail{% endblock %}
+{% if search_term %}
+     <h2>You searched for:{{search_term}}</h2>
+{% endif %}
+{% block body %}
+<br><br>
+<a href="{% url 'Home_Page' %}">
+        <button type="button" class="btn btn-success">Go Back</button>
+</a>
+<h4>Results for {{category.title}} </h4>
+    {% for business in businesses %}
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img width="200" src="{{ business.profile_image.url }}" class="img-fluid rounded-start" alt="{{ business.business_name }}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ business.business_name }}</h5>
+                        <p class="card-text">
+                            Contact:<br>
+                            Name: {{ business.person_name }}<br>
+                            Phone: {{ business.phone_number }}<br>
+                            Email: <a href="mailto:{{ business.email }}">{{ business.email }}</a><br>
+                            Website: <a href="{{ business.website }}" target="_blank">{{ business.website }}</a>
+                        </p>
+                        <p class="card-text"><small class="text-body-secondary"> {{ business.business_category.title }} </small></p>
+                    </div>
+                </div>
+            </div>
+
+
+                {% if business.person_name == request.user.username %}
+                       <div class="btn-group" role="group" aria-label="Button group">
+                            <a href="{% url 'edit_business' passed_id=business.id %}" class="btn btn-success mr-2">Modify</a>
+                            <a href="{% url 'delete_business' passed_id=business.id %}" class="btn btn-danger ml-2">Delete</a>
+                       </div>
+
+                {% endif %}
+            <br>
+              {% if review_details %}
+                {% for review in review_details %}
+                    {% if review.video_url %}
+                        <div class="embed-responsive embed-responsive-21by9">
+                            <iframe class="embed-responsive-item" src="{{review.video_url}}" allowfullscreen type="text/html"></iframe>
+                        </div>
+                    {% endif %}
+                <h5>Title: {{review.title}}</h5>
+                <h6>Rating: {{review.rating}}</h6>
+                <h6> {{review.description}}</h6>
+                <h6>Author: {{review.review_author}}</h6>
+                {% endfor %}
+              {% endif %}
+                {% if request.user.is_authenticated %}
+                {% if user.groups.all.0.name == "reviewers" %}
+                <a href="{% url 'Home_Page' %}accounts/add_review/{{business.id}}">
+                        <button type="button" class="btn btn-success">Add review</button>
+                </a>
+                {% endif %}
+                {% endif %}
+        </div>
+    {% endfor %}
+              <br><br>
+{% endblock %}
